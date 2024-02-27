@@ -92,8 +92,7 @@ def pregunta_06():
     ['A', 'B', 'C', 'D', 'E', 'F', 'G']
 
     """
-    return tbl1["_c4"].unique().sort_values().str.upper().tolist()
-
+    return sorted(tbl1["_c4"].str.upper().unique())
 
 def pregunta_07():
     """
@@ -181,7 +180,8 @@ def pregunta_11():
     38   38      d,e
     39   39    a,d,f
     """
-    return tbl1.groupby("_c0")["_c4"].apply(lambda x: ",".join(x.sort_values())).to_frame("_c4")
+    return tbl1.groupby("_c0")["_c4"].apply(lambda x: ",".join(x.sort_values())).to_frame("_c4").reset_index()
+print(pregunta_11())
 
 def pregunta_12():
     """
