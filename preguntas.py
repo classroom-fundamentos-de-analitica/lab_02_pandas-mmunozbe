@@ -13,7 +13,6 @@ tbl0 = pd.read_csv("tbl0.tsv", sep="\t")
 tbl1 = pd.read_csv("tbl1.tsv", sep="\t")
 tbl2 = pd.read_csv("tbl2.tsv", sep="\t")
 
-print(tbl0.shape)
 
 def pregunta_01():
     """
@@ -145,7 +144,7 @@ def pregunta_09():
     39   39   E    5  1998-01-26  1998
 
     """
-    tbl0["year"] = pd.to_datetime(tbl0["_c3"], format="%Y-%m-%d").dt.year
+    tbl0["year"] = tbl0["_c3"].apply(lambda x: x.split("-")[0])
     return tbl0
 
 def pregunta_10():
@@ -154,18 +153,17 @@ def pregunta_10():
     la columna _c2 para el archivo `tbl0.tsv`.
 
     Rta/
-                                   _c1
-      _c0
+                                   _c2
+      _c1
     0   A              1:1:2:3:6:7:8:9
     1   B                1:3:4:5:6:8:9
     2   C                    0:5:6:7:9
     3   D                  1:2:3:5:5:7
     4   E  1:1:2:3:3:4:5:5:5:6:7:8:8:9
+    
+    esta lista debe ir ordenada de menor a mayor
     """
-    table = tbl0.groupby("_c1")["_c2"].apply(lambda x: ":".join(x.astype(str))).reset_index()
-    return table.set_index("_c1").sort_index()
-print(pregunta_10())
-
+    return tbl0.groupby("_c1")["_c2"].apply(lambda x: ":".join(x.sort_values().astype(str))).to_frame("_c2")
 
 def pregunta_11():
     """
@@ -183,8 +181,7 @@ def pregunta_11():
     38   38      d,e
     39   39    a,d,f
     """
-    return
-
+    return tbl1.groupby("_c0")["_c4"].apply(lambda x: ",".join(x.sort_values())).to_frame("_c4")
 
 def pregunta_12():
     """
@@ -201,7 +198,9 @@ def pregunta_12():
     38   38                    eee:0,fff:9,iii:2
     39   39                    ggg:3,hhh:8,jjj:5
     """
-    return
+
+    tbl2["_c5"] = tbl2[["_c5a", "_c5b"]].apply(lambda x: f"{x[0]}:{x[1]}", axis=1)
+    return tbl2.groupby("_c0")["_c5"].apply(lambda x: ",".join(x.sort_values())).to_frame("_c5")
 
 
 def pregunta_13():
@@ -218,4 +217,4 @@ def pregunta_13():
     E    275
     Name: _c5b, dtype: int64
     """
-    return
+    return tbl0.merge(tbl2, on="_c0").groupby("_c1")["_c5b"].sum().sort_index()
