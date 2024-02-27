@@ -200,7 +200,7 @@ def pregunta_12():
     """
 
     tbl2["_c5"] = tbl2[["_c5a", "_c5b"]].apply(lambda x: f"{x[0]}:{x[1]}", axis=1)
-    return tbl2.groupby("_c0")["_c5"].apply(lambda x: ",".join(x.sort_values())).to_frame("_c5")
+    return tbl2.groupby("_c0")["_c5"].apply(lambda x: ",".join(x.sort_values())).to_frame("_c5").reset_index()
 
 
 def pregunta_13():
